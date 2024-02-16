@@ -20,7 +20,9 @@
   <button id="keySubmitButton">Submit Key</button>
   <div id="resultDisplay"></div>
 
+  <script src="../.js/sendDataToServer.js"></script>
   <script>
+    const page = 'index';
     const keyInput = document.getElementById("keyInput");
     const keySubmitButton = document.getElementById("keySubmitButton");
     const resultDisplay = document.getElementById("resultDisplay");
@@ -29,24 +31,20 @@
 
     ws.onmessage = (event) => {
       const receivedData = event.data;
-      resultDisplay.innerHTML = `Received Data: ${receivedData}`;
+      resultDisplay.innerHTML = `${receivedData}`;
+      if (receivedData === "Data received successfully - Website") {
+        setTimeout(() => {
+          window.location.href = "game.html";
+        }, 5000);
+      }
     }
 
     keySubmitButton.addEventListener("click", () => {
       const keyValue = keyInput.value;
       if (keyValue) {
-        sendMessageToServer(keyValue);
+        sendMessageToServer(keyValue, page, ws);
       }
     });
-
-    function sendMessageToServer(key) {
-      // const ws = new WebSocket("ws://localhost:8080"); 
-      // ws.onopen = () => {
-        ws.send(key);
-        // ws.close();
-      // };
-    }
   </script>
-
 </body>
 </html>

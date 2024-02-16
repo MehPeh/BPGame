@@ -18,20 +18,18 @@
     <button id="keyOption3">innerHTML 3</button>
     <button id="keyOption4">innerHTML 4</button>
 
+    <script src="../.js/sendDataToServer.js"></script>
     <script>
+        const page = 'game'
         const buttons = document.querySelectorAll('button');
 
         const ws = new WebSocket("ws://localhost:8080");
 
         buttons.forEach((button) => {
             button.addEventListener('click', () => {
-                sendMessageToServer(button.innerHTML);
+                sendMessageToServer(button.innerHTML, page, ws);
             });
         });
-
-        function sendMessageToServer(data) {
-            ws.send(data);
-        }
     </script>
 </body>
 </html>
