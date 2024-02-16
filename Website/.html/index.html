@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audience participation game</title>
+    <link rel="stylesheet" href="../.css/main.css">
+    <!-- using external js file doesnt work => use inline script
+    <script src="../.js/sendDataToServer.js"></script>
+    -->
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="game.html">Game</a></li>
+    </ul>
+  </nav>
+  <input type="text" id="keyInput" placeholder="Enter Key (e.g., 12345678)">
+  <button id="keySubmitButton">Submit Key</button>
+  <div id="resultDisplay"></div>
+
+  <script>
+    const keyInput = document.getElementById("keyInput");
+    const keySubmitButton = document.getElementById("keySubmitButton");
+    const resultDisplay = document.getElementById("resultDisplay");
+
+    const ws = new WebSocket("ws://localhost:8080"); 
+
+    ws.onmessage = (event) => {
+      const receivedData = event.data;
+      resultDisplay.innerHTML = `Received Data: ${receivedData}`;
+    }
+
+    keySubmitButton.addEventListener("click", () => {
+      const keyValue = keyInput.value;
+      if (keyValue) {
+        sendMessageToServer(keyValue);
+      }
+    });
+
+    function sendMessageToServer(key) {
+      // const ws = new WebSocket("ws://localhost:8080"); 
+      // ws.onopen = () => {
+        ws.send(key);
+        // ws.close();
+      // };
+    }
+  </script>
+
+</body>
+</html>
