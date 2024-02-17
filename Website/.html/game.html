@@ -27,7 +27,7 @@
 
         buttons.forEach((button) => {
             button.addEventListener('click', () => {
-                sendMessageToServer(button.innerHTML, page, ws);
+                sendMessageToServer(page, button.innerHTML, ws);
             });
         });
     </script>

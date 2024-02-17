@@ -42,7 +42,7 @@
     keySubmitButton.addEventListener("click", () => {
       const keyValue = keyInput.value;
       if (keyValue) {
-        sendMessageToServer(keyValue, page, ws);
+        sendMessageToServer(page, keyValue, ws);
       }
     });
   </script>

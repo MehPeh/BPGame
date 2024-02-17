@@ -1,5 +1,5 @@
 // sendDataToServer.js
-function sendMessageToServer(toSend, currentPage, ws) {
+function sendMessageToServer(currentPage, toSend, ws) {
       const data = `${currentPage}:${toSend}`;
       ws.send(data);
   }  
