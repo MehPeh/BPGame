@@ -7,9 +7,21 @@ public class UniqueCodeGenerator : MonoBehaviour
 {
     public string GenerateCode()
     {
-        string timeCode = DateTime.Now.ToString("HHmmss");
-        int randomNum = UnityEngine.Random.Range(1000, 10000);
+        string timeCode = DateTime.Now.ToString("mmss");
+        int randomNum = UnityEngine.Random.Range(100, 1000);
         string uniqueCode = timeCode + randomNum.ToString();
-        return uniqueCode;
+        
+        // Convert the unique code to hexadecimal to shorten it
+        string hexCode = ConvertToHex(uniqueCode);
+
+        return hexCode;
+    }
+
+    private string ConvertToHex(string originalCode)
+    {
+        long decimalValue = long.Parse(originalCode);
+        string hexValue = decimalValue.ToString("X");
+
+        return hexValue;
     }
 }

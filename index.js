@@ -1,20 +1,24 @@
 // Connect to WebSocket
 const WebSocket = require('ws')
 
+let unique_code = "5050"
+
 const wss = new WebSocket.Server({port:8080},()=>{
         console.log('Server started!')
 })
 
-const unique_code = "5050"
-
 wss.on('connection',(ws)=>{
         ws.on('message',(data)=>{
-                console.log('data received %o', data.toString())
+                console.log('Data received: %o', data.toString());
 
                 // Split the received data into page and data
                 const [currentPage, receivedData] = data.toString().split(':');
-
-                if (currentPage === 'index') {
+                
+                if (currentPage === 'gameUniqueCode') {
+                        // Set the unique_code variable to the received gameUniqueCode
+                        unique_code = receivedData;
+                        console.log("Game unique code updated:", unique_code);
+                } else if (currentPage === 'index') {
                         if (receivedData === unique_code){
                                 // Sending data back to the client
                                 ws.send("Data received successfully");

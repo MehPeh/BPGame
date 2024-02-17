@@ -24,9 +24,20 @@ public class PlayerLife : MonoBehaviour
     }
     private void Die()
     {
-        rb.bodyType = RigidbodyType2D.Static;
+        // Disable the Rigidbody2D component
+        rb.velocity = Vector2.zero; // Stop any remaining velocity
+        rb.gravityScale = 0f; // Disable gravity if needed
+        rb.simulated = false;
+        
         anim.SetTrigger("Death");
         deathSoundEffect.Play();
+        StartCoroutine(RestartLevelAfterDelay(2f));
+    }
+
+    private IEnumerator RestartLevelAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        RestartLevel();
     }
 
     private void RestartLevel()
