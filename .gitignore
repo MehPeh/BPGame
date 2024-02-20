@@ -71,5 +71,8 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-#ignore /Scriptie/
+#ignore Scriptie/
 Scriptie/
+
+#ignore node_modules/
+node_modules/
