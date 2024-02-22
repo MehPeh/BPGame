@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ItemCollector : MonoBehaviour
 {
-    public int score = 0;
+    public short score = 0;
     [SerializeField] private Text collectablesText;
     [SerializeField] private AudioSource collectionSoundEffect;
     private void OnTriggerEnter2D(Collider2D collision)

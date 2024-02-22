@@ -14,6 +14,9 @@ public class UniqueCodeGenerator : MonoBehaviour
         // Convert the unique code to hexadecimal to shorten it
         string hexCode = ConvertToHex(uniqueCode);
 
+        // Save the unique code to PlayerPrefs
+        PlayerPrefs.SetString("UniqueCode", hexCode);
+
         return hexCode;
     }
 

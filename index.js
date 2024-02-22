@@ -33,5 +33,5 @@ wss.on('connection',(ws)=>{
 })
 
 wss.on('listening',()=>{
-        console.log('Server is listening on port 8080')
+        console.log('Server is listening on port 8080');
 })
