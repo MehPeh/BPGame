@@ -5,26 +5,26 @@ using UnityEngine.SceneManagement;
 
 public class Finish : MonoBehaviour
 {
-    private AudioSource finishSound;
-    private bool levelCompleted = false;
+      private AudioSource finishSound;
+      private bool levelCompleted = false;
 
-    private void Start()
-    {
-        finishSound = GetComponent<AudioSource>();
-    }
+      private void Start()
+      {
+            finishSound = GetComponent<AudioSource>();
+      }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if ( collision.gameObject.name == "Player" && !levelCompleted)
-        {
-            Invoke("CompleteLevel", 2f);
-            finishSound.Play();
-            levelCompleted = true;
-        }
-    }
+      private void OnTriggerEnter2D(Collider2D collision)
+      {
+            if ( collision.gameObject.name == "Player" && !levelCompleted)
+            {
+                  Invoke("CompleteLevel", 2f);
+                  finishSound.Play();
+                  levelCompleted = true;
+            }
+      }
 
-    private void CompleteLevel()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-    }
+      private void CompleteLevel()
+      {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+      }
 }

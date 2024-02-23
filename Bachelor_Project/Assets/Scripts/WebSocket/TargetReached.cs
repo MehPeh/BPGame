@@ -5,33 +5,33 @@ using WebSocketSharp;
 
 public class TargetReached : MonoBehaviour
 {
-    WebSocket ws;
-    [SerializeField] private int targetScore = 10;
-    private ItemCollector itemCollector;
-    private int currentScore;
+      WebSocket ws;
+      [SerializeField] private int targetScore = 10;
+      private ItemCollector itemCollector;
+      private int currentScore;
 
-    void Start()
-    {
-        ws = new WebSocket("ws://localhost:8080");
-        ws.OnMessage += (sender, e) =>
-        {
-            Debug.Log("Message received from " + ((WebSocket)sender).Url + ", Data : " + e.Data);
-        };
-        ws.Connect();
-        itemCollector = GetComponent<ItemCollector>();
-    }
+      void Start()
+      {
+            ws = new WebSocket("ws://localhost:8080");
+            ws.OnMessage += (sender, e) =>
+            {
+                  Debug.Log("Message received from " + ((WebSocket)sender).Url + ", Data : " + e.Data);
+            };
+            ws.Connect();
+            itemCollector = GetComponent<ItemCollector>();
+      }
 
-    void Update()
-    {
-        if (ws == null)
-        {
-            return;
-        }
-        currentScore = itemCollector.score;
-        if(currentScore >= targetScore)
-        {
-            ws.Send("Target score reached!");
-            itemCollector.score = 0;
-        }
-    }
+      void Update()
+      {
+            if (ws == null)
+            {
+                  return;
+            }
+            currentScore = itemCollector.score;
+            if (currentScore >= targetScore)
+            {
+                  ws.Send("Target score reached!");
+                  itemCollector.score = 0;
+            }
+      }
 }
