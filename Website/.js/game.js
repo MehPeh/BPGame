@@ -9,6 +9,8 @@ window.addEventListener('load', () => {
       const page = 'game';
       const buttons = document.querySelectorAll('button');
       const pollStateDisplay = document.getElementById('pollStateDisplay');
+
+      let lastPressedButton = null;
     
       ws.addEventListener('message', (event) => {
             const { pollState } = JSON.parse(event.data);
@@ -23,21 +25,42 @@ window.addEventListener('load', () => {
     
       buttons.forEach((button) => {
             button.addEventListener('click', () => {
-                  sendMessageToServer(page, button.innerHTML, ws);
+                  if (button.classList.contains('active')) {
+                        if (lastPressedButton) {
+                              lastPressedButton.classList.remove('lastPressed');
+                        }
+                        button.classList.add('lastPressed');
+                        // console.log(lastPressedButton);
+                        lastPressedButton = button;
+                        // console.log( button);
+                  }
             });
       });
-    
+      
       // Example: Handle poll state changes
       function handlePollStateChange(pollState) {
             switch (pollState) {
                   case PollStates.AWAITING_POLL:
-                        // Handle awaiting poll state
+                        buttons.forEach((button) => {
+                              button.classList.remove('active', 'lastPressed');
+                              button.disabled = true;
+                        });
                         break;
                   case PollStates.IN_PROGRESS:
-                        // Handle in-progress poll state
+                        buttons.forEach((button) => {
+                              button.classList.add('active');
+                              button.disabled = false;
+                        });
                         break;
                   case PollStates.POLL_CLOSED:
-                        // Handle poll closed state
+                        buttons.forEach((button) => {
+                              button.classList.remove('active');
+                              button.disabled = true;
+                              if (button.classList.contains('lastPressed')) {
+                                    sendMessageToServer(page, button.innerHTML, ws);
+                              }
+                              button.classList.remove('lastPressed');
+                        });
                         break;
                   default:
                         console.warn(`Unknown poll state: ${pollState}`);

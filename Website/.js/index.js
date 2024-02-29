@@ -6,7 +6,6 @@ window.addEventListener("load", () => {
   
       ws.onmessage = (event) => {
             const receivedData = event.data;
-            console.log('Data received: ${receivedData}');
             try{
                   const parsedMessage = JSON.parse(receivedData);
                   if (parsedMessage.login) {
@@ -17,6 +16,7 @@ window.addEventListener("load", () => {
                               }, 3000);
                         }
                   }
+                  console.log('Data received: ', parsedMessage);
             } catch (error) {
                   console.error("Error parsing message:", error);
             }

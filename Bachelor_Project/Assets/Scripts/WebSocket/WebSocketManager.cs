@@ -26,7 +26,7 @@ public class WebSocketManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
             // Initialize WebSocket connection to the server
-            ws = new WebSocket("ws://localhost:8080");
+            ws = new WebSocket("ws://localhost:3000");
 
             // Register an event handler for the WebSocket's OnOpen event
             ws.OnOpen += (sender, e) =>
@@ -34,7 +34,7 @@ public class WebSocketManager : MonoBehaviour
                   if (!string.IsNullOrEmpty(uniqueCode))
                   {
                         // Send the unique code to the server with the specified format
-                        string message = $"gameUniqueCode:{uniqueCode}";
+                        string message = $"uniqueCode:{uniqueCode}";
                         ws.Send(message);
                         Debug.Log("Sent unique code to server: " + uniqueCode);
                   }
@@ -55,7 +55,7 @@ public class WebSocketManager : MonoBehaviour
             if (ws != null && ws.IsAlive)
             {
                   // Send a message to the server to set the unique code to null before closing the connection
-                  string message = "gameUniqueCode:null";
+                  string message = "uniqueCode:null";
                   ws.Send(message);
 
                   // Close the WebSocket connection
