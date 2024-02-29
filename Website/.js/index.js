@@ -6,11 +6,19 @@ window.addEventListener("load", () => {
   
       ws.onmessage = (event) => {
             const receivedData = event.data;
-            resultDisplay.innerHTML = `${receivedData}`;
-            if (receivedData === "Data received successfully") {
-                  setTimeout(() => {
-                        window.location.href = "game.html";
-                  }, 3000);
+            console.log('Data received: ${receivedData}');
+            try{
+                  const parsedMessage = JSON.parse(receivedData);
+                  if (parsedMessage.login) {
+                        resultDisplay.innerHTML = parsedMessage.login;
+                        if (parsedMessage.login === "correct") {
+                              setTimeout(() => {
+                                    window.location.href = "game.html";
+                              }, 3000);
+                        }
+                  }
+            } catch (error) {
+                  console.error("Error parsing message:", error);
             }
       }
   
