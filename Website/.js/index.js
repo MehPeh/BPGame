@@ -13,12 +13,12 @@ window.addEventListener("load", () => {
                         if (parsedMessage.login === "correct") {
                               setTimeout(() => {
                                     window.location.href = "game.html";
-                              }, 3000);
+                              }, 2000);
                         }
                   }
-                  console.log('Data received: ', parsedMessage);
+                  console.log("Data received: ", parsedMessage);
             } catch (error) {
-                  console.error("Error parsing message:", error);
+                  console.error("Error parsing message: ", error);
             }
       }
   

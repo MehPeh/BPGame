@@ -31,7 +31,7 @@ public class PlayerLife : MonoBehaviour
         
             anim.SetTrigger("Death");
             deathSoundEffect.Play();
-            StartCoroutine(RestartLevelAfterDelay(2f));
+            StartCoroutine(RestartLevelAfterDelay(0.8f));
       }
 
       private IEnumerator RestartLevelAfterDelay(float delay)

@@ -6,22 +6,34 @@ const PollStates = {
 };
     
 window.addEventListener('load', () => {
-      const page = 'game';
+      const page = 'vote';
       const buttons = document.querySelectorAll('button');
       const pollStateDisplay = document.getElementById('pollStateDisplay');
 
       let lastPressedButton = null;
     
-      ws.addEventListener('message', (event) => {
-            const { pollState } = JSON.parse(event.data);
-            console.log(`Received updated poll state: ${pollState}`);
-    
-            // Update the displayed poll state
-            updatePollStateDisplay(pollState);
-        
-            // Handle the poll state change as needed in your game
-            handlePollStateChange(pollState);
-      });
+      ws.onmessage = (event) => {
+            const receivedData = event.data;
+            try {
+                  const parsedMessage = JSON.parse(receivedData);
+                  if (!parsedMessage.state) {
+                        console.log("Message wasn't for us.");
+                        return;
+                  }
+                  // Check if received Data is for us ( a poll state)
+                  if(!Object.values(PollStates).includes(parsedMessage.state)){
+                        console.log("couldn't find pollstate in enum");
+                        return;
+                  }
+                  console.log(`Received updated poll state: ${parsedMessage.state}`);
+                  // Update the displayed poll state
+                  updatePollStateDisplay(parsedMessage.state);
+                  // Handle the poll state change as needed in your game
+                  handlePollStateChange(parsedMessage.state);
+            } catch (error) {
+                  console.error("Error parsing message:", error);
+            }
+      };
     
       buttons.forEach((button) => {
             button.addEventListener('click', () => {
@@ -37,7 +49,6 @@ window.addEventListener('load', () => {
             });
       });
       
-      // Example: Handle poll state changes
       function handlePollStateChange(pollState) {
             switch (pollState) {
                   case PollStates.AWAITING_POLL:
