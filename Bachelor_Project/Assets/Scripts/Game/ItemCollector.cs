@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class ItemCollector : MonoBehaviour
 {
       private string playerPrefsKey = "PlayerScore";
-    
+
       public short score = 0;
       [SerializeField] private Text collectablesText;
       [SerializeField] private AudioSource collectionSoundEffect;
@@ -14,24 +14,24 @@ public class ItemCollector : MonoBehaviour
       private void Start()
       {
             score = (short)PlayerPrefs.GetInt(playerPrefsKey, 0);
-            UpdateScoreText();
+            UpdateScoreText(score);
       }
 
       private void OnTriggerEnter2D(Collider2D collision)
       {
-            if(collision.gameObject.CompareTag("Collectables"))
+            if (collision.gameObject.CompareTag("Collectables"))
             {
                   // Debug.Log("Item Destroyed");
                   Destroy(collision.gameObject);
                   score++;
-                  UpdateScoreText();
+                  UpdateScoreText(score);
                   collectionSoundEffect.Play();
             }
       }
 
-      private void UpdateScoreText()
+      public void UpdateScoreText(short number)
       {
-            collectablesText.text = "Score: " + score;
+            collectablesText.text = "Score: " + number;
       }
 
       private void OnDestroy()

@@ -31,6 +31,7 @@ public class WebSocketManager : MonoBehaviour
             // Register an event handler for the WebSocket's OnOpen event
             ws.OnOpen += (sender, e) =>
             {
+                  Debug.Log("WebSocket connection opened.");
                   if (!string.IsNullOrEmpty(uniqueCode))
                   {
                         // Send the unique code to the server with the specified format
@@ -40,6 +41,11 @@ public class WebSocketManager : MonoBehaviour
                   }
             };
 
+            ws.OnMessage += (sender, e) =>
+            {
+                  Debug.Log("Message received from " + ((WebSocket)sender).Url + ", Data : " + e.Data);
+            };
+
             // Connect to the WebSocket server
             ws.Connect();
       }
@@ -47,6 +53,16 @@ public class WebSocketManager : MonoBehaviour
       public void SetUniqueCode(string newCode)
       {
             uniqueCode = newCode;
+            // Debug.Log("Set the Unique code to: " + newCode);
+      }
+
+      public void SendMessageToServer(string message)
+      {
+            if (ws != null && ws.IsAlive)
+            {
+                  ws.Send(message);
+                  Debug.Log("Sent message to server: " + message);
+            }
       }
 
       private void OnDestroy()

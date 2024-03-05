@@ -28,7 +28,7 @@ readyServer.on("upgrade", (req, socket, head) => {
 function updatePollState(newState) {
         console.log(`PollState updated to ${newState}`);
         if (newState === "inProgress") {
-            startPollTimer();
+                startPollTimer();
         }
         pollState = newState;
         broadcastMessage("state", pollState);
@@ -40,12 +40,12 @@ function startPollTimer() {
                 pollTimer = setTimeout(() => {
                         updatePollState("awaitingPoll");
                         const favoriteAnswer = mode(pollAnswers);
-                        broadcastMessage( "pollResult", favoriteAnswer);
+                        broadcastMessage("pollResult", favoriteAnswer);
                         pollAnswers.length = 0;
                 }, pollResultTime);
         }, pollDuration);
 }
-    
+
 function resetPollTimer() {
         if (pollTimer) {
                 clearTimeout(pollTimer);
@@ -54,7 +54,7 @@ function resetPollTimer() {
 }
 
 function mode(array) {
-        if(array.length == 0){
+        if (array.length == 0) {
                 console.log("Error: Array is empty.");
                 return null;
         }
@@ -62,29 +62,29 @@ function mode(array) {
         const modeMap = {};
         let maxEl = array[0];
         let maxCount = 1;
-        
+
         for (let i = 0; i < array.length; i++) {
                 const el = array[i];
                 updateMode(el, modeMap, maxEl, maxCount);
         }
-        
+
         console.log("Favorite answer:", maxEl);
         return maxEl;
 }
 
 function updateMode(el, modeMap, maxEl, maxCount) {
         modeMap[el] = (modeMap[el] == null) ? 1 : modeMap[el]++;
-    
+
         if (modeMap[el] > maxCount) {
-            maxEl = el;
-            maxCount = modeMap[el];
+                maxEl = el;
+                maxCount = modeMap[el];
         }
-}    
+}
 
 function broadcastMessage(key, data) {
         const message = {};
         message[key] = data;
-        
+
         const serializedMessage = JSON.stringify(message);
 
         websocketServer.clients.forEach((client) => {
@@ -98,15 +98,15 @@ websocketServer.on("connection", (websocketConnection) => {
         websocketConnection.send(JSON.stringify({ state: pollState }));
         websocketConnection.on("message", (data) => {
                 console.log("Data received: %o", data.toString());
-      
+
                 // Split the received data into page and data
                 const [currentPage, receivedData] = data.toString().split(":");
-      
+
                 if (currentPage === "uniqueCode") {
                         // Set the unique_code variable to the received gameUniqueCode
                         unique_code = receivedData.toLowerCase();
                         console.log(`Game unique code updated: ${unique_code}`);
-                } 
+                }
                 if (currentPage === "index") {
                         if (receivedData.toLowerCase() === unique_code) {
                                 // Sending data back to the client

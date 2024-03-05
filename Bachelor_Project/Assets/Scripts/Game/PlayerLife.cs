@@ -17,7 +17,7 @@ public class PlayerLife : MonoBehaviour
       }
       private void OnCollisionEnter2D(Collision2D collision)
       {
-            if(collision.gameObject.tag == "Trap")
+            if (collision.gameObject.tag == "Trap")
             {
                   Die();
             }
@@ -28,7 +28,7 @@ public class PlayerLife : MonoBehaviour
             rb.velocity = Vector2.zero; // Stop any remaining velocity
             rb.gravityScale = 0f; // Disable gravity if needed
             rb.simulated = false;
-        
+
             anim.SetTrigger("Death");
             deathSoundEffect.Play();
             StartCoroutine(RestartLevelAfterDelay(0.8f));

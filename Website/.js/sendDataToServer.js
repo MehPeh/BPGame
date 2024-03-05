@@ -1,6 +1,6 @@
 const ws = new WebSocket(`ws://${window.location.host}`);
 
-function sendMessageToServer(currentPage, toSend, ws) {
-      const data = `${currentPage}:${toSend}`;
-      ws.send(data);
+function sendMessageToServer(key, data, ws) {
+      const message = `${key}:${data}`;
+      ws.send(message);
 }

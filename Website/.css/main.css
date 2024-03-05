@@ -1,12 +1,16 @@
 /* Add styles for active buttons */
 button.active {
-      background-color: green; /* Change the background color to green for active buttons */
-      color: white; /* Set text color to white */
-    }
-    
-    /* Add styles for the last pressed button */
-    button.lastPressed {
-      background-color: red;
-      color: black; /* Set text color to white */
-      font-weight: bold; /* Make the text bold for the last pressed button */
-    }
+  background-color: green;
+  /* Change the background color to green for active buttons */
+  color: white;
+  /* Set text color to white */
+}
+
+/* Add styles for the last pressed button */
+button.lastPressed {
+  background-color: red;
+  color: black;
+  /* Set text color to white */
+  font-weight: bold;
+  /* Make the text bold for the last pressed button */
+}
