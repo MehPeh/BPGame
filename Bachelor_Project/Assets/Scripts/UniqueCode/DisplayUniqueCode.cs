@@ -8,20 +8,28 @@ public class DisplayUniqueCode : MonoBehaviour
 
       private void Start()
       {
-            if (codeGenerator != null && uniqueCodeText != null)
+            if (codeGenerator != null)
             {
-                  // Generate the unique code from the UniqueCodeGenerator script
-                  string uniqueCode = codeGenerator.GenerateCode();
+                  if (uniqueCodeText != null)
+                  {
+                        // Generate the unique code from the UniqueCodeGenerator script
+                        string uniqueCode = codeGenerator.GenerateCode();
 
-                  // Set the generated unique code to the TextMeshPro component's text
-                  uniqueCodeText.text = "Unique Code: " + uniqueCode;
+                        // Set the generated unique code to the TextMeshPro component's text
+                        uniqueCodeText.text = "Unique Code: " + uniqueCode;
 
-                  // Set the unique code in the WebSocketManager
-                  WebSocketManager.Instance.SetUniqueCode(uniqueCode);
+                        // Set the unique code in the WebSocketManager
+                        WebSocketManager.Instance.SetUniqueCode(uniqueCode);
+                  }
+                  else
+                  {
+                        Debug.LogWarning("Missing references in DisplayUniqueCode script. (uniqueCodeText)");
+                  }
+
             }
             else
             {
-                  Debug.LogWarning("Missing references in DisplayUniqueCode script.");
+                  Debug.LogWarning("Missing references in DisplayUniqueCode script. (codeGenerator)");
             }
       }
 }

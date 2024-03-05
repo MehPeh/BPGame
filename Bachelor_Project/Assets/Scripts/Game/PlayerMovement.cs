@@ -10,8 +10,8 @@ public class PlayerMovement : MonoBehaviour
       private Animator anim;
       [SerializeField] private LayerMask jumpableGround;
       private float dirX = 0f;
-      [SerializeField] private float moveSpeed = 7f;
-      [SerializeField] private float jumpForce = 14f;
+      private readonly float moveSpeed = GameVariables.playerMovementSpeed;
+      private readonly float jumpForce = GameVariables.playerJumpForce;
       private enum MovementState
       {
             idle, running, falling, jumping
@@ -19,7 +19,6 @@ public class PlayerMovement : MonoBehaviour
 
       [SerializeField] private AudioSource jumpSoundEffect;
 
-      // Start is called before the first frame update
       private void Start()
       {
             rb = GetComponent<Rigidbody2D>();
@@ -28,7 +27,6 @@ public class PlayerMovement : MonoBehaviour
             sprite = GetComponent<SpriteRenderer>();
       }
 
-      // Update is called once per frame
       private void Update()
       {
             dirX = Input.GetAxisRaw("Horizontal");
