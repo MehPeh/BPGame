@@ -10,8 +10,8 @@ public class PlayerMovement : MonoBehaviour
       private Animator anim;
       [SerializeField] private LayerMask jumpableGround;
       private float dirX = 0f;
-      private readonly float moveSpeed = GameVariables.playerMovementSpeed;
-      private readonly float jumpForce = GameVariables.playerJumpForce;
+      private readonly float moveSpeed = GameVariables.gameValues["playerMovementSpeed"];
+      private readonly float jumpForce = GameVariables.gameValues["playerJumpForce"];
       private enum MovementState
       {
             idle, running, falling, jumping

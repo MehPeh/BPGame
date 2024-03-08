@@ -15,19 +15,22 @@ public class GameVariables : MonoBehaviour
       };
 
       // changeable variables
-      public static float playerGravityScale = defaultValues["playerGravityScale"];
-      public static float playerJumpForce = defaultValues["playerJumpForce"];
-      public static float playerMovementSpeed = defaultValues["playerMovementSpeed"];
-      public static short targetScore = (short)defaultValues["targetScore"];
-      public static float trapSpeed = defaultValues["trapSpeed"];
+      public static Dictionary<string, float> gameValues = new()
+      {
+            { "playerGravityScale", defaultValues["playerGravityScale"] },
+            { "playerJumpForce", defaultValues["playerJumpForce"] },
+            { "playerMovementSpeed", defaultValues["playerMovementSpeed"] },
+            { "targetScore", defaultValues["targetScore"] },
+            { "trapSpeed", defaultValues["trapSpeed"] }
+      };
 
       // Reset variables to default values
       public static void ResetToDefaultValues()
       {
-            playerGravityScale = defaultValues["playerGravityScale"];
-            playerJumpForce = defaultValues["playerJumpForce"];
-            playerMovementSpeed = defaultValues["playerMovementSpeed"];
-            targetScore = (short)defaultValues["targetScore"];
-            trapSpeed = defaultValues["trapSpeed"];
+            gameValues["playerGravityScale"] = defaultValues["playerGravityScale"];
+            gameValues["playerJumpForce"] = defaultValues["playerJumpForce"];
+            gameValues["playerMovementSpeed"] = defaultValues["playerMovementSpeed"];
+            gameValues["targetScore"] = defaultValues["targetScore"];
+            gameValues["trapSpeed"] = defaultValues["trapSpeed"];
       }
 }

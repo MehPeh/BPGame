@@ -7,13 +7,13 @@ public class ItemCollector : MonoBehaviour
 {
       private string playerPrefsKey = "PlayerScore";
 
-      public short score = 0;
+      public float score = 0;
       [SerializeField] private Text collectablesText;
       [SerializeField] private AudioSource collectionSoundEffect;
 
       private void Start()
       {
-            score = (short)PlayerPrefs.GetInt(playerPrefsKey, 0);
+            score = (float)PlayerPrefs.GetInt(playerPrefsKey, 0);
             UpdateScoreText(score);
       }
 
@@ -29,14 +29,14 @@ public class ItemCollector : MonoBehaviour
             }
       }
 
-      public void UpdateScoreText(short number)
+      public void UpdateScoreText(float number)
       {
             collectablesText.text = "Score: " + number;
       }
 
       private void OnDestroy()
       {
-            PlayerPrefs.SetInt(playerPrefsKey, score);
+            PlayerPrefs.SetFloat(playerPrefsKey, score);
             PlayerPrefs.Save();
       }
 }

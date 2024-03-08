@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class TargetReached : MonoBehaviour
 {
-      private readonly short targetScore = GameVariables.targetScore;
-      [SerializeField] private short resetValue = 0;
+      private readonly float targetScore = GameVariables.gameValues["targetScore"];
+      [SerializeField] private float resetValue = 0;
       private ItemCollector itemCollector;
-      private int currentScore;
+      private float currentScore;
 
       void Start()
       {

@@ -7,7 +7,7 @@ public class WaypointFollower : MonoBehaviour
       [SerializeField] private GameObject[] waypoints;
       private int currentWaypointIndex = 0;
 
-      private readonly float speed = GameVariables.trapSpeed;
+      private readonly float speed = GameVariables.gameValues["trapSpeed"];
 
       private void Update()
       {
