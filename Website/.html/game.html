@@ -9,17 +9,19 @@
 </head>
 
 <body>
-  <nav>
+  <nav id="navigation">
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="game.html">Game</a></li>
     </ul>
   </nav>
-  <button id="keyOption1">innerHTML 1</button>
-  <button id="keyOption2">innerHTML 2</button>
-  <button id="keyOption3">innerHTML 3</button>
-  <button id="keyOption4">innerHTML 4</button>
-  <div id="pollStateDisplay">Poll State:</div>
+  <div id="content" class="pollOptions">
+    <button id="keyOption1">innerHTML 1</button>
+    <button id="keyOption2">innerHTML 2</button>
+    <button id="keyOption3">innerHTML 3</button>
+    <button id="keyOption4">innerHTML 4</button>
+    <div id="pollStateDisplay">Poll State:</div>
+  </div>
 
   <script src="../.js/sendDataToServer.js"></script>
   <script src="../.js/game.js"></script>

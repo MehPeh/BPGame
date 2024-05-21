@@ -1,5 +1,9 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using WebSocketSharp;
+using Newtonsoft.Json.Linq;
 
 public class WebSocketManager : MonoBehaviour
 {
@@ -41,9 +45,10 @@ public class WebSocketManager : MonoBehaviour
                   }
             };
 
-            ws.OnMessage += (sender, e) =>
+            ws.OnMessage += (sender, message) =>
             {
-                  Debug.Log("Message received from " + ((WebSocket)sender).Url + ", Data : " + e.Data);
+                  Debug.Log("Message received from " + ((WebSocket)sender).Url + ", Data : " + message.Data);
+                  HandleMessage(message.Data);
             };
 
             // Connect to the WebSocket server
@@ -54,6 +59,46 @@ public class WebSocketManager : MonoBehaviour
       {
             uniqueCode = newCode;
             // Debug.Log("Set the Unique code to: " + newCode);
+      }
+
+      private void HandleMessage(string message)
+      {
+            JObject jsonData;
+            try {
+                  jsonData = JObject.Parse(message);
+            }
+            catch (Exception ex) 
+            {
+                  Debug.LogError("Failed to parse message: " + ex.Message);
+                  return;
+            }
+
+            if (jsonData.ContainsKey("state"))
+            {
+                  string state = jsonData["state"].ToString();
+                  switch (state)
+                  {
+                        case "awaitingPoll":
+                              Debug.Log("Handler received data: " + state + " correctly");
+                              break;
+                        case "inProgress":
+                              Debug.Log("Handler received data: " + state + " correctly");
+                              break;
+                        case "pollClosed":
+                              Debug.Log("Handler received data: " + state + " correctly");
+                              break;
+                  }
+            }
+            else if (jsonData.ContainsKey("pollResult"))
+            {
+                  string pollResult = jsonData["pollResult"].ToString();
+                  Debug.Log("Poll result received: " + pollResult);
+                  // Perform action for poll result
+            }
+            else
+            {
+                  Debug.Log("Unknown message format: " + message);
+            }
       }
 
       public void SendMessageToServer(string message)

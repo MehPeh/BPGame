@@ -9,15 +9,17 @@
 </head>
 
 <body>
-  <nav>
+  <nav id="navigation">
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="game.html">Game</a></li>
     </ul>
   </nav>
-  <input type="text" id="keyInput" placeholder="Enter Key (e.g., 12345678)" autocomplete="off" />
-  <button id="keySubmitButton">Submit Key</button>
-  <div id="resultDisplay"></div>
+  <div id="content">
+    <input type="text" id="keyInput" placeholder="Enter Key (e.g., 12345678)" autocomplete="off" />
+    <button id="keySubmitButton">Submit Key</button>
+    <div id="resultDisplay"></div>
+  </div>
 
   <script src="../.js/sendDataToServer.js"></script>
   <script src="../.js/index.js"></script>
