@@ -1,0 +1,8 @@
+{
+      "changes": {
+            "increasePlus": 1.5,
+            "increase": 1.2,
+            "decrease": 0.8,
+            "decreasePlus": 0.66
+      }
+}

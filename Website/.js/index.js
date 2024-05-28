@@ -13,7 +13,7 @@ window.addEventListener("load", () => {
                         if (parsedMessage.login === "correct") {
                               setTimeout(() => {
                                     window.location.href = "game.html";
-                              }, 2000);
+                              }, 1000);
                         }
                   }
                   console.log("Data received: ", parsedMessage);

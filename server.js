@@ -99,35 +99,49 @@ websocketServer.on("connection", (websocketConnection) => {
         websocketConnection.on("message", (data) => {
                 console.log("Data received: %o", data.toString());
 
-                // Split the received data into page and data
-                const [currentPage, receivedData] = data.toString().split(":");
-
-                if (currentPage === "uniqueCode") {
-                        // Set the unique_code variable to the received gameUniqueCode
-                        unique_code = receivedData.toLowerCase();
+                let jsonData;
+                try {
+                        jsonData = JSON.parse(data);
+                } catch (error) {
+                        console.error("Invalid JSON received:", error);
+                        websocketConnection.send(JSON.stringify({ error: "Invalid JSON format" }));
+                        return;
+                }
+                if (jsonData.uniqueCode) {
+                        unique_code = jsonData.uniqueCode.toLowerCase();
                         console.log(`Game unique code updated: ${unique_code}`);
                 }
-                if (currentPage === "index") {
-                        if (receivedData.toLowerCase() === unique_code) {
-                                // Sending data back to the client
+                if (jsonData.index) {
+                        if (unique_code == null || unique_code == "null") {
+                                websocketConnection.send(JSON.stringify({ login: "No Game in Progress" }));
+                                console.log("login:No Game in Progress");
+                                return;
+                        }
+                        else if (jsonData.index.toLowerCase() === unique_code) {
                                 websocketConnection.send(JSON.stringify({ login: "correct" }));
                                 console.log("login:correct");
                         } else {
-                                // Sending data back to the client
                                 websocketConnection.send(JSON.stringify({ login: "incorrect" }));
                                 console.log("login:incorrect");
                         }
                 }
-                if (currentPage === "target") {
-                        if (receivedData.toLowerCase() === "reached") {
+                if (jsonData.target) {
+                        if (jsonData.target.toLowerCase() === "reached") {
                                 updatePollState("inProgress");
                         }
                 }
-                if (currentPage === "vote") {
-                        pollAnswers.push(receivedData);
+                if (jsonData.vote) {
+                        pollAnswers.push(jsonData.vote);
+                }
+                if (jsonData.pollOptions) {
+                        websocketServer.clients.forEach((client) => {
+                                if (client.readyState === webSocket.OPEN) {
+                                        client.send(JSON.stringify(jsonData));
+                                }
+                        });
                 }
         });
-});
+});    
 
 // API endpoint to update poll state
 expressServer.post('/update-poll-state/:newState', (req, res) => {

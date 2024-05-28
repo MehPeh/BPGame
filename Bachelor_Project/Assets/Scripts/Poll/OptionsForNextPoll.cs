@@ -1,25 +1,66 @@
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
+using Newtonsoft.Json.Linq;
 
 public class OptionsForNextPoll : MonoBehaviour
 {
-      private static readonly Dictionary<string, float> changeValues = new()
-      {
-            { "increasePlus", 1.5f },
-            { "increase", 1.2f },
-            { "decrease", 0.8f },
-            { "decreasePlus", 0.66f }
-      };
+      private static Dictionary<string, float> changeValues = new();
 
-      public static void randomPollCombinationGenerator()
+      public void LoadChangeValuesFromFile()
       {
-            string randomGameValue = GetRandomKey(GameVariables.gameValues);
-            string randomChangeValue = GetRandomKey(changeValues);
+            string filePath = Path.Combine(Application.dataPath, "Scripts", "configuration.json");
+            Debug.Log($"Loading configuration file from: {filePath}");
 
-            string result = $"{randomGameValue}:{randomChangeValue}";
-            Debug.Log(result);
+            if (File.Exists(filePath))
+            {
+                  string json = File.ReadAllText(filePath);
+                  JObject config = JObject.Parse(json);
+
+                  if (config.ContainsKey("changes"))
+                  {
+                        changeValues = config["changes"].ToObject<Dictionary<string, float>>();
+                        Debug.Log("Change values loaded successfully.");
+                  }
+                  else
+                  {
+                        Debug.LogError("No 'changes' section found in configuration file!");
+                  }
+            }
+            else
+            {
+                  Debug.LogError("Configuration file not found!");
+            }
+      }
+
+      public static string GenerateNextPollOptions()
+      {
+            JObject pollOptions = new JObject();
+
+            for (int i = 1; i <= 4; i++)
+            {
+                  string randomGameValue = GetRandomKey(GameVariables.gameValues);
+                  string randomChangeValue = GetRandomKey(changeValues);
+
+                  JObject option = new JObject
+                  {
+                        { randomGameValue, randomChangeValue }
+                  };
+
+            pollOptions.Add($"option{i}", option);
+            }
+
+            JObject result = new JObject
+            {
+                  { "pollOptions", pollOptions }
+            };
+
+            string jsonResult = result.ToString(Newtonsoft.Json.Formatting.None);
+            // Debug.Log(jsonResult);
+
+            return jsonResult;
       }
 
       private static string GetRandomKey(Dictionary<string, float> dictionary)

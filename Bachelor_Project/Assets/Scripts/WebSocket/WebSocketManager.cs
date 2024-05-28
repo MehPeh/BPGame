@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WebSocketSharp;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 public class WebSocketManager : MonoBehaviour
@@ -39,8 +40,8 @@ public class WebSocketManager : MonoBehaviour
                   if (!string.IsNullOrEmpty(uniqueCode))
                   {
                         // Send the unique code to the server with the specified format
-                        string message = $"uniqueCode:{uniqueCode}";
-                        ws.Send(message);
+                        var messageData = "{\"uniqueCode\":\"" + uniqueCode + "\"}";
+                        SendMessageToServer(messageData);
                         Debug.Log("Sent unique code to server: " + uniqueCode);
                   }
             };
@@ -101,12 +102,12 @@ public class WebSocketManager : MonoBehaviour
             }
       }
 
-      public void SendMessageToServer(string message)
+      public void SendMessageToServer(string jsonMessage)
       {
             if (ws != null && ws.IsAlive)
             {
-                  ws.Send(message);
-                  Debug.Log("Sent message to server: " + message);
+                  ws.Send(jsonMessage);
+                  Debug.Log("Sent message to server: " + jsonMessage);
             }
       }
 
@@ -116,8 +117,10 @@ public class WebSocketManager : MonoBehaviour
             if (ws != null && ws.IsAlive)
             {
                   // Send a message to the server to set the unique code to null before closing the connection
-                  string message = "uniqueCode:null";
-                  ws.Send(message);
+                  var messageData = "{\"uniqueCode\":\"null\"}";
+
+                  // Send the JSON message to the server
+                  SendMessageToServer(messageData);
 
                   // Close the WebSocket connection
                   ws.Close();
