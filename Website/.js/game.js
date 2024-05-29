@@ -8,45 +8,39 @@ const PollStates = {
   window.addEventListener("load", () => {
 	const page = "vote";
 	const buttons = document.querySelectorAll("button");
-	const pollStateDisplay = document.getElementById("pollStateDisplay");
   
 	let lastPressedButton = null;
   
 	ws.onmessage = (event) => {
-	    const receivedData = event.data;
-	    try {
-		  const parsedMessage = JSON.parse(receivedData);
-		  if (!parsedMessage.state && !parsedMessage.pollOptions) {
-			console.log("Message wasn't for us.");
-			return;
-		  }
-		  //if (!Object.values(PollStates).includes(parsedMessage.state)) {
-			//console.log("couldn't find pollstate in enum");
-			//return;
-		  //}
-		  if (parsedMessage.state) {
-			console.log(`Received updated poll state: ${parsedMessage.state}`);
-		  	handlePollStateChange(parsedMessage.state);
-		  }
-		  // Update the buttons with the received pollOptions
-		  if (parsedMessage.pollOptions) {
-			handlePollOptions(parsedMessage.pollOptions);
-		  }
-	    } catch (error) {
-		  console.error("Error parsing message:", error);
-	    }
+	    	const receivedData = event.data;
+	    	try {
+		  	const parsedMessage = JSON.parse(receivedData);
+		  	if (!parsedMessage.state && !parsedMessage.pollOptions) {
+				console.log("Message wasn't for us.");
+				return;
+		  	}
+		  	if (parsedMessage.state) {
+				console.log(`Received updated poll state: ${parsedMessage.state}`);
+		  		handlePollStateChange(parsedMessage.state);
+		  	}
+		  	if (parsedMessage.pollOptions) {
+				handlePollOptions(parsedMessage.pollOptions);
+		  	}
+	    	} catch (error) {
+		  	console.error("Error parsing message:", error);
+	    	}
 	};
   
 	buttons.forEach((button) => {
-	    button.addEventListener("click", () => {
-		  if (button.classList.contains("active")) {
-			if (lastPressedButton) {
-			    lastPressedButton.classList.remove("lastPressed");
-			}
-			button.classList.add("lastPressed");
-			lastPressedButton = button;
-		  }
-	    });
+	    	button.addEventListener("click", () => {
+		  	if (button.classList.contains("active")) {
+				if (lastPressedButton) {
+			    		lastPressedButton.classList.remove("lastPressed");
+				}
+				button.classList.add("lastPressed");
+				lastPressedButton = button;
+		  	}
+	    	});
 	});
   
 	function handlePollStateChange(pollState) {
@@ -69,7 +63,7 @@ const PollStates = {
 			    		button.classList.remove("active");
 			    		button.disabled = true;
 			    		if (button.classList.contains("lastPressed")) {
-				  		sendMessageToServer(page, button.innerHTML, ws);
+				  		sendMessageToServer(page, convertBack(button.innerHTML), ws);
 			    		}
 			    		button.classList.remove("lastPressed");
 					});
@@ -78,20 +72,16 @@ const PollStates = {
 				console.warn(`Unknown poll state: ${pollState}`);
 	    	}
 	}
-  
-	// Function to update the button innerHTML based on the received pollOptions
+
 	function handlePollOptions(pollOptions) {
 	    	for (let i = 0; i < buttons.length; i++) {
-		  	const buttonId = `keyOption${i + 1}`;
 		  	const option = pollOptions[`option${i + 1}`];
 		  	if (option) {
-				// Update button innerHTML based on the option
 				const optionName = Object.keys(option)[0];
                 		const formattedOptionName = convertToTitleCase(optionName);
                 		const formattedOptionValue = formatOptionValue(option[optionName]);
                 		buttons[i].innerHTML = `${formattedOptionName} ${formattedOptionValue}`;
 		  	} else {
-				// If option is not provided, set innerHTML to default
 				buttons[i].innerHTML = `innerHTML ${i + 1}`;
 		  	}
 	    	}
@@ -115,5 +105,38 @@ const PollStates = {
 			  	return "";
 		}
 	}
-  });
+
+	function convertBack(input) {
+		const words = input.split(' ').filter(word => word.trim() !== '');
+
+		if (words.length === 0) {
+			return '';
+		}
+		let firstWord = words[0].toLowerCase().replace(/\+$/, '');
+
+		let changeType = "";
+		if (words[words.length - 1].endsWith('+')) {
+		    	changeType = "increase";
+		    	if (words[words.length - 1].endsWith('++')) {
+			  	changeType += "Plus";
+		    	}
+		} else if (words[words.length - 1].endsWith('-')) {
+		    	changeType = "decrease";
+		    	if (words[words.length - 1].endsWith('--')) {
+			  	changeType += "Plus";
+		    	}
+		}
+
+		for (let i = 1; i < words.length - 1; i++) {
+		    words[i] = words[i][0].toUpperCase() + words[i].substring(1);
+		}
+
+		const otherWords = words.slice(1, -1).join('');
+
+		const jsonObject = {};
+    		jsonObject[`${firstWord}${otherWords}`] = changeType;
+
+    		return jsonObject;
+	}
+});
   

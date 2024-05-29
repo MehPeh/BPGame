@@ -92,9 +92,25 @@ public class WebSocketManager : MonoBehaviour
             }
             else if (jsonData.ContainsKey("pollResult"))
             {
-                  string pollResult = jsonData["pollResult"].ToString();
-                  Debug.Log("Poll result received: " + pollResult);
-                  // Perform action for poll result
+                  JObject pollResultObject = jsonData["pollResult"] as JObject;
+    
+                  foreach (var property in pollResultObject.Properties())
+                  {
+                        string key = property.Name;
+                        string value = property.Value.ToString();
+        
+                        Debug.Log("Poll result received: Key: " + key + ", Value: " + value);
+                        float floatValue = OptionsForNextPoll.LookupChangeValue(value);
+                        if (GameVariables.gameValues.ContainsKey(key))
+                        {
+                              GameVariables.gameValues[key] *= floatValue;
+                              Debug.Log($"Muliplied " + key + " with " + floatValue);
+                        }
+                        else
+                        {
+                              Debug.LogError($"Key '{key}' not found in gameValues dictionary.");
+                        }
+                  }
             }
             else
             {
@@ -121,6 +137,9 @@ public class WebSocketManager : MonoBehaviour
 
                   // Send the JSON message to the server
                   SendMessageToServer(messageData);
+
+                  // Reset the changed game variables
+                  GameVariables.ResetToDefaultValues();
 
                   // Close the WebSocket connection
                   ws.Close();

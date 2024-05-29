@@ -5,32 +5,32 @@ using UnityEngine;
 public class GameVariables : MonoBehaviour
 {
       // default variables
-      private static readonly Dictionary<string, float> defaultValues = new()
+      private static readonly Dictionary<string, float> defaultGameValues = new()
       {
             { "playerGravityScale", 3f },
             { "playerJumpForce", 14f },
             { "playerMovementSpeed", 7f },
-            { "targetScore", 2f },
+            { "targetScore", 10f },
             { "trapSpeed", 2f }
       };
 
       // changeable variables
       public static Dictionary<string, float> gameValues = new()
       {
-            { "playerGravityScale", defaultValues["playerGravityScale"] },
-            { "playerJumpForce", defaultValues["playerJumpForce"] },
-            { "playerMovementSpeed", defaultValues["playerMovementSpeed"] },
-            { "targetScore", defaultValues["targetScore"] },
-            { "trapSpeed", defaultValues["trapSpeed"] }
+            { "playerGravityScale", defaultGameValues["playerGravityScale"] },
+            { "playerJumpForce", defaultGameValues["playerJumpForce"] },
+            { "playerMovementSpeed", defaultGameValues["playerMovementSpeed"] },
+            { "targetScore", defaultGameValues["targetScore"] },
+            { "trapSpeed", defaultGameValues["trapSpeed"] }
       };
 
       // Reset variables to default values
       public static void ResetToDefaultValues()
       {
-            gameValues["playerGravityScale"] = defaultValues["playerGravityScale"];
-            gameValues["playerJumpForce"] = defaultValues["playerJumpForce"];
-            gameValues["playerMovementSpeed"] = defaultValues["playerMovementSpeed"];
-            gameValues["targetScore"] = defaultValues["targetScore"];
-            gameValues["trapSpeed"] = defaultValues["trapSpeed"];
+            gameValues["playerGravityScale"] = defaultGameValues["playerGravityScale"];
+            gameValues["playerJumpForce"] = defaultGameValues["playerJumpForce"];
+            gameValues["playerMovementSpeed"] = defaultGameValues["playerMovementSpeed"];
+            gameValues["targetScore"] = defaultGameValues["targetScore"];
+            gameValues["trapSpeed"] = defaultGameValues["trapSpeed"];
       }
 }

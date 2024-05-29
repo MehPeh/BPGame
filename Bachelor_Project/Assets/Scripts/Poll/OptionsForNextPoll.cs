@@ -39,17 +39,29 @@ public class OptionsForNextPoll : MonoBehaviour
       {
             JObject pollOptions = new JObject();
 
+            HashSet<string> generatedCombinations = new HashSet<string>();
+
             for (int i = 1; i <= 4; i++)
             {
-                  string randomGameValue = GetRandomKey(GameVariables.gameValues);
-                  string randomChangeValue = GetRandomKey(changeValues);
+                  string randomGameValue;
+                  string randomChangeValue;
+                  string combination;
+
+                  do
+                  {
+                        randomGameValue = GetRandomKey(GameVariables.gameValues);
+                        randomChangeValue = GetRandomKey(changeValues);
+                        combination = $"{randomGameValue},{randomChangeValue}";
+                  } while (generatedCombinations.Contains(combination));
+
+                  generatedCombinations.Add(combination);
 
                   JObject option = new JObject
                   {
                         { randomGameValue, randomChangeValue }
                   };
 
-            pollOptions.Add($"option{i}", option);
+                  pollOptions.Add($"option{i}", option);
             }
 
             JObject result = new JObject
@@ -70,5 +82,18 @@ public class OptionsForNextPoll : MonoBehaviour
             string[] keys = new string[dictionary.Count];
             dictionary.Keys.CopyTo(keys, 0);
             return keys[randomIndex];
+      }
+
+      public static float LookupChangeValue(string stringValue)
+      {
+            if (changeValues.ContainsKey(stringValue))
+            {
+                  return changeValues[stringValue];
+            }
+            else
+            {
+                  Debug.LogError($"Value '{stringValue}' not found in changeValues dictionary.");
+            return 1f;
+            }
       }
 }
