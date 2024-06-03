@@ -93,7 +93,7 @@ public class OptionsForNextPoll : MonoBehaviour
             else
             {
                   Debug.LogError($"Value '{stringValue}' not found in changeValues dictionary.");
-            return 1f;
+                  return 1f;
             }
       }
 }

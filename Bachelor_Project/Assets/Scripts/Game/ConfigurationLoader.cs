@@ -4,16 +4,20 @@ public class ConfigurationLoader : MonoBehaviour
 {
       private void Awake()
       {
-            // Find the OptionsForNextPoll component in the scene
-            OptionsForNextPoll optionsForNextPoll = FindObjectOfType<OptionsForNextPoll>();
+            LoadComponent<OptionsForNextPoll>(component => component.LoadChangeValuesFromFile());
+            LoadComponent<GameVariables>(component => component.LoadGameValuesFromFile());
+      }
 
-            if (optionsForNextPoll != null)
+      private void LoadComponent<ComponentType>(System.Action<ComponentType> loadAction) where ComponentType : MonoBehaviour
+      {
+            ComponentType component = FindObjectOfType<ComponentType>();
+            if (component != null)
             {
-                  optionsForNextPoll.LoadChangeValuesFromFile();
+                  loadAction(component);
             }
             else
             {
-                  Debug.LogError("OptionsForNextPoll script not found in the scene!");
+                  Debug.LogError($"{typeof(ComponentType).Name} script not found in the scene!");
             }
       }
 }

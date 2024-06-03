@@ -4,5 +4,12 @@
             "increase": 1.2,
             "decrease": 0.8,
             "decreasePlus": 0.66
+      },
+      "game_values": {
+            "playerGravityScale": 3,
+            "playerJumpForce": 14,
+            "playerMovementSpeed": 7,
+            "targetScore": 10,
+            "trapSpeed": 2 
       }
 }

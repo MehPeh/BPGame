@@ -19,7 +19,7 @@ public class WebSocketManager : MonoBehaviour
             {
                   if (instance == null)
                   {
-                        GameObject go = new GameObject("WebSocketManager");
+                        var go = new GameObject("WebSocketManager");
                         instance = go.AddComponent<WebSocketManager>();
                   }
                   return instance;
@@ -33,78 +33,68 @@ public class WebSocketManager : MonoBehaviour
             // Initialize WebSocket connection to the server
             ws = new WebSocket("ws://localhost:3000");
 
-            // Register an event handler for the WebSocket's OnOpen event
-            ws.OnOpen += (sender, e) =>
-            {
-                  Debug.Log("WebSocket connection opened.");
-                  if (!string.IsNullOrEmpty(uniqueCode))
-                  {
-                        // Send the unique code to the server with the specified format
-                        var messageData = "{\"uniqueCode\":\"" + uniqueCode + "\"}";
-                        SendMessageToServer(messageData);
-                        Debug.Log("Sent unique code to server: " + uniqueCode);
-                  }
-            };
-
-            ws.OnMessage += (sender, message) =>
-            {
-                  Debug.Log("Message received from " + ((WebSocket)sender).Url + ", Data : " + message.Data);
-                  HandleMessage(message.Data);
-            };
+            // Register event handlers
+            ws.OnOpen += OnWebSocketOpen;
+            ws.OnMessage += OnWebSocketMessage;
 
             // Connect to the WebSocket server
             ws.Connect();
       }
 
+      private void OnWebSocketOpen(object sender, EventArgs e)
+      {
+            Debug.Log("WebSocket connection opened.");
+            if (!string.IsNullOrEmpty(uniqueCode))
+            {
+                  // Send the unique code to the server with the specified format
+                  SendMessageToServer(new JObject { { "uniqueCode", uniqueCode } }.ToString());
+                  Debug.Log($"Sent unique code to server: {uniqueCode}");
+            }
+      }
+
+      private void OnWebSocketMessage(object sender, MessageEventArgs messageEventArgs)
+      {
+            Debug.Log($"Message received from {((WebSocket)sender).Url}, Data: {messageEventArgs.Data}");
+            HandleMessage(messageEventArgs.Data);
+      }
+
       public void SetUniqueCode(string newCode)
       {
             uniqueCode = newCode;
-            // Debug.Log("Set the Unique code to: " + newCode);
       }
 
       private void HandleMessage(string message)
       {
             JObject jsonData;
-            try {
+            try
+            {
                   jsonData = JObject.Parse(message);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                  Debug.LogError("Failed to parse message: " + ex.Message);
+                  Debug.LogError($"Failed to parse message: {ex.Message}");
                   return;
             }
 
-            if (jsonData.ContainsKey("state"))
+            if (jsonData.TryGetValue("state", out JToken stateToken))
             {
-                  string state = jsonData["state"].ToString();
-                  switch (state)
-                  {
-                        case "awaitingPoll":
-                              Debug.Log("Handler received data: " + state + " correctly");
-                              break;
-                        case "inProgress":
-                              Debug.Log("Handler received data: " + state + " correctly");
-                              break;
-                        case "pollClosed":
-                              Debug.Log("Handler received data: " + state + " correctly");
-                              break;
-                  }
+                  string state = stateToken.ToString();
+                  Debug.Log($"Handler received data: {state} correctly");
             }
-            else if (jsonData.ContainsKey("pollResult"))
+            else if (jsonData.TryGetValue("pollResult", out JToken pollResultToken))
             {
-                  JObject pollResultObject = jsonData["pollResult"] as JObject;
-    
+                  var pollResultObject = (JObject)pollResultToken;
                   foreach (var property in pollResultObject.Properties())
                   {
                         string key = property.Name;
                         string value = property.Value.ToString();
-        
-                        Debug.Log("Poll result received: Key: " + key + ", Value: " + value);
+
+                        Debug.Log($"Poll result received: Key: {key}, Value: {value}");
                         float floatValue = OptionsForNextPoll.LookupChangeValue(value);
                         if (GameVariables.gameValues.ContainsKey(key))
                         {
                               GameVariables.gameValues[key] *= floatValue;
-                              Debug.Log($"Muliplied " + key + " with " + floatValue);
+                              Debug.Log($"Multiplied {key} with {floatValue}");
                         }
                         else
                         {
@@ -114,36 +104,33 @@ public class WebSocketManager : MonoBehaviour
             }
             else
             {
-                  Debug.Log("Unknown message format: " + message);
+                  Debug.Log($"Unknown message format: {message}");
             }
       }
 
       public void SendMessageToServer(string jsonMessage)
       {
-            if (ws != null && ws.IsAlive)
+            if (ws?.IsAlive == true)
             {
                   ws.Send(jsonMessage);
-                  Debug.Log("Sent message to server: " + jsonMessage);
+                  Debug.Log($"Sent message to server: {jsonMessage}");
             }
       }
 
       private void OnDestroy()
       {
             // Close the WebSocket connection when the script is destroyed
-            if (ws != null && ws.IsAlive)
+            if (ws?.IsAlive == true)
             {
                   // Send a message to the server to set the unique code to null before closing the connection
-                  var messageData = "{\"uniqueCode\":\"null\"}";
-
-                  // Send the JSON message to the server
-                  SendMessageToServer(messageData);
+                  SendMessageToServer(new JObject { { "uniqueCode", "null" } }.ToString());
 
                   // Reset the changed game variables
                   GameVariables.ResetToDefaultValues();
 
                   // Close the WebSocket connection
                   ws.Close();
-                  Debug.Log("Sent message to set unique code to null and closed the connection.");
+                  Debug.Log("Sent message to set unique code to null, reset gamevalues and closed the connection.");
             }
       }
 }
