@@ -11,5 +11,8 @@
             "playerMovementSpeed": 7,
             "targetScore": 10,
             "trapSpeed": 2 
-      }
+      },
+      "poll_option_amount": 4,
+      "pollDuration": 10000,
+      "pollResultTime": 3000
 }

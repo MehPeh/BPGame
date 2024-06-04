@@ -6,17 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Audience participation game</title>
   <link rel="stylesheet" href="../.css/main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 
 <body>
   <main id="content" class="pollOptions">
-    <button id="keyOption1"></button>
-    <button id="keyOption2"></button>
-    <button id="keyOption3"></button>
-    <button id="keyOption4"></button>
+    <div id="buttonsContainer"></div>
   </main>
 
   <script src="../.js/sendDataToServer.js"></script>
+  <script src="../.js/generateButtons.js"></script>
   <script src="../.js/game.js"></script>
 </body>
 

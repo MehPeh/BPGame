@@ -7,18 +7,14 @@ const PollStates = {
 
 window.addEventListener("load", () => {
 	const page = "vote";
-	const buttons = document.querySelectorAll("button");
-
+	const buttonsContainer = document.getElementById("content");
+	const buttons = buttonsContainer.querySelectorAll("button");
 	let lastPressedButton = null;
 
 	ws.onmessage = (event) => {
 		const receivedData = event.data;
 		try {
 			const parsedMessage = JSON.parse(receivedData);
-			if (!parsedMessage.state && !parsedMessage.pollOptions) {
-				console.log("Message wasn't for us.");
-				return;
-			}
 			if (parsedMessage.state) {
 				console.log(`Received updated poll state: ${parsedMessage.state}`);
 				handlePollStateChange(parsedMessage.state);
@@ -31,42 +27,27 @@ window.addEventListener("load", () => {
 		}
 	};
 
-	buttons.forEach((button) => {
-		button.addEventListener("click", () => {
-			if (button.classList.contains("active")) {
-				if (lastPressedButton) {
-					lastPressedButton.classList.remove("lastPressed");
-				}
-				button.classList.add("lastPressed");
-				lastPressedButton = button;
+	buttonsContainer.addEventListener("click", (event) => {
+		const button = event.target;
+		if (button.tagName === "BUTTON" && button.classList.contains("active")) {
+			if (lastPressedButton) {
+				lastPressedButton.classList.remove("lastPressed");
 			}
-		});
+			button.classList.add("lastPressed");
+			lastPressedButton = button;
+		}
 	});
 
 	function handlePollStateChange(pollState) {
 		switch (pollState) {
 			case PollStates.AWAITING_POLL:
-				buttons.forEach((button) => {
-					button.classList.remove("active", "lastPressed");
-					button.disabled = true;
-					button.innerHTML = "";
-				});
+				resetButtons();
 				break;
 			case PollStates.IN_PROGRESS:
-				buttons.forEach((button) => {
-					button.classList.add("active");
-					button.disabled = false;
-				});
+				activateButtons();
 				break;
 			case PollStates.POLL_CLOSED:
-				buttons.forEach((button) => {
-					button.classList.remove("active");
-					button.disabled = true;
-					if (button.classList.contains("lastPressed")) {
-						sendMessageToServer(page, convertBack(button.innerHTML), ws);
-					}
-					button.classList.remove("lastPressed");
-				});
+				deactivateButtons();
 				break;
 			default:
 				console.warn(`Unknown poll state: ${pollState}`);
@@ -74,17 +55,49 @@ window.addEventListener("load", () => {
 	}
 
 	function handlePollOptions(pollOptions) {
-		for (let i = 0; i < buttons.length; i++) {
+		buttons.forEach((button, i) => {
 			const option = pollOptions[`option${i + 1}`];
-			if (option) {
-				const optionName = Object.keys(option)[0];
-				const formattedOptionName = convertToTitleCase(optionName);
-				const formattedOptionValue = formatOptionValue(option[optionName]);
-				buttons[i].innerHTML = `${formattedOptionName} ${formattedOptionValue}`;
+			button.innerHTML = option ? formatButtonLabel(option) : `innerHTML ${i + 1}`;
+		});
+	}
+
+	function resetButtons() {
+		buttons.forEach((button, index) => {
+			button.classList.remove("active", "lastPressed");
+			button.disabled = true;
+			if (index === 0) {
+				button.innerHTML = "APG";
+			} else if (index === 1) {
+				button.innerHTML = "Currently no poll";
 			} else {
-				buttons[i].innerHTML = `innerHTML ${i + 1}`;
+				button.innerHTML = "";
 			}
-		}
+		});
+	}
+
+	function activateButtons() {
+		buttons.forEach((button) => {
+			button.classList.add("active");
+			button.disabled = false;
+		});
+	}
+
+	function deactivateButtons() {
+		buttons.forEach((button) => {
+			button.classList.remove("active");
+			button.disabled = true;
+			if (button.classList.contains("lastPressed")) {
+				sendMessageToServer(page, convertBack(button.innerHTML), ws);
+			}
+			button.classList.remove("lastPressed");
+		});
+	}
+
+	function formatButtonLabel(option) {
+		const optionName = Object.keys(option)[0];
+		const formattedOptionName = convertToTitleCase(optionName);
+		const formattedOptionValue = formatOptionValue(option[optionName]);
+		return `${formattedOptionName} ${formattedOptionValue}`;
 	}
 
 	function convertToTitleCase(str) {
@@ -108,34 +121,25 @@ window.addEventListener("load", () => {
 
 	function convertBack(input) {
 		const words = input.split(' ').filter(word => word.trim() !== '');
+		if (words.length === 0) return '';
 
-		if (words.length === 0) {
-			return '';
-		}
 		let firstWord = words[0].toLowerCase().replace(/\+$/, '');
-
-		let changeType = "";
-		if (words[words.length - 1].endsWith('+')) {
-			changeType = "increase";
-			if (words[words.length - 1].endsWith('++')) {
-				changeType += "Plus";
-			}
-		} else if (words[words.length - 1].endsWith('-')) {
-			changeType = "decrease";
-			if (words[words.length - 1].endsWith('--')) {
-				changeType += "Plus";
-			}
-		}
+		let changeType = determineChangeType(words[words.length - 1]);
 
 		for (let i = 1; i < words.length - 1; i++) {
 			words[i] = words[i][0].toUpperCase() + words[i].substring(1);
 		}
 
 		const otherWords = words.slice(1, -1).join('');
-
-		const jsonObject = {};
-		jsonObject[`${firstWord}${otherWords}`] = changeType;
-
+		const jsonObject = { [`${firstWord}${otherWords}`]: changeType };
 		return jsonObject;
+	}
+
+	function determineChangeType(lastWord) {
+		if (lastWord.endsWith('++')) return "increasePlus";
+		if (lastWord.endsWith('+')) return "increase";
+		if (lastWord.endsWith('--')) return "decreasePlus";
+		if (lastWord.endsWith('-')) return "decrease";
+		return "";
 	}
 });

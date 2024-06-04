@@ -7,10 +7,11 @@ public class WaypointFollower : MonoBehaviour
       [SerializeField] private GameObject[] waypoints;
       private int currentWaypointIndex = 0;
 
-      private readonly float speed = GameVariables.gameValues["trapSpeed"];
+      private float speed = GameVariables.gameValues["trapSpeed"];
 
       private void Update()
       {
+            speed = GameVariables.gameValues["trapSpeed"];
             if (Vector2.Distance(waypoints[currentWaypointIndex].transform.position, transform.position) < .1f)
             {
                   currentWaypointIndex++;

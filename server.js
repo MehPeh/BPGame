@@ -1,16 +1,31 @@
+const fs = require('fs');
+const path = require('path');
 const webSocket = require('ws');
 const express = require("express");
 const expressServer = express();
 const port = 3000;
 
+// Read configuration.json
+const configPath = path.join(__dirname, '..', 'BPGame','Bachelor_Project', 'Assets', 'Scripts', 'configuration.json');
+let config;
+
+try {
+        const configFile = fs.readFileSync(configPath);
+        config = JSON.parse(configFile);
+        console.log('Configuration loaded:', config);
+} catch (error) {
+        console.error('Error reading configuration file:', error);
+}
+
+const pollDuration = config.pollDuration;
+const pollResultTime = config.pollResultTime;
+
 let unique_code = null;
 let pollState = "awaitingPoll"; // initial poll state
 let pollTimer;
-const pollDuration = 15000;
-const pollResultTime = 5000;
 let pollAnswers = [];
 
-expressServer.use(express.static("Website"));
+expressServer.use(express.static("../BPGame"));
 
 const websocketServer = new webSocket.Server({ noServer: true });
 
@@ -116,8 +131,7 @@ websocketServer.on("connection", (websocketConnection) => {
                                 websocketConnection.send(JSON.stringify({ login: "No Game in Progress" }));
                                 console.log("login:No Game in Progress");
                                 return;
-                        }
-                        else if (jsonData.index.toLowerCase() === unique_code) {
+                        } else if (jsonData.index.toLowerCase() === unique_code) {
                                 websocketConnection.send(JSON.stringify({ login: "correct" }));
                                 console.log("login:correct");
                         } else {
@@ -141,7 +155,7 @@ websocketServer.on("connection", (websocketConnection) => {
                         });
                 }
         });
-});    
+});
 
 // API endpoint to update poll state
 expressServer.post('/update-poll-state/:newState', (req, res) => {

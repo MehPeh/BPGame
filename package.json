@@ -12,11 +12,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "braces": "^3.0.3",
     "express": "^4.18.2",
+    "fs": "^0.0.1-security",
+    "glob": "^10.4.1",
     "nuget": "^2.0.2",
-    "ws": "^8.16.0"
+    "path": "^0.12.7",
+    "ws": "^8.17.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.3"
+    "nodemon": "^3.1.3"
   }
 }

@@ -2,12 +2,12 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Press Start 2P", sans-serif;
 }
 
 body, html {
   width: 100%;
   height: 100%;
-  font-family: Arial, sans-serif;
   background-color: #5E59D6;
 }
 
@@ -19,6 +19,15 @@ body, html {
   width: 100%;
   height: 100%;
   text-align: center;
+}
+
+#buttonsContainer {
+  width: 100%;
+  height: 100%;
+}
+
+h1 {
+  padding: 0.5em;
 }
 
 .pollOptions {
@@ -37,8 +46,22 @@ body, html {
   font-size: 1.5em;
 }
 
+#keySubmitButton {
+  padding: 0.5em;
+  margin: 0.5em;
+  background-color: #2d2a7c;
+  color: #fff;
+}
+
+#keyInput {
+  background-color: #2d2a7c;
+  padding: 0.5em;
+  margin: 0.5em;
+  color: #fff;
+}
+
 button {
-  padding: 20px;
+  background-color: #5E59D6;
 }
 
 button.active {
@@ -59,7 +82,4 @@ button.lastPressed {
 #resultDisplay, #pollStateDisplay {
   margin-top: 20px;
   font-size: 1.2em;
-}
-
-@media (max-width: 768px) {
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class TargetReached : MonoBehaviour
 {
       private readonly float targetScore = GameVariables.gameValues["targetScore"];
-      [SerializeField] private float resetValue = 0;
+      private float resetValue = 0;
       private ItemCollector itemCollector;
       private float currentScore;
 
