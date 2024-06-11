@@ -80,7 +80,7 @@ function mode(array) {
 
         for (let i = 0; i < array.length; i++) {
                 const el = array[i];
-                updateMode(el, modeMap, maxEl, maxCount);
+                [maxEl, maxCount] = updateMode(el, modeMap, maxEl, maxCount);
         }
 
         console.log("Favorite answer:", maxEl);
@@ -88,12 +88,13 @@ function mode(array) {
 }
 
 function updateMode(el, modeMap, maxEl, maxCount) {
-        modeMap[el] = (modeMap[el] == null) ? 1 : modeMap[el]++;
+        modeMap[el] = (modeMap[el] == null) ? 1 : modeMap[el] + 1;
 
         if (modeMap[el] > maxCount) {
                 maxEl = el;
                 maxCount = modeMap[el];
         }
+        return [maxEl, maxCount];
 }
 
 function broadcastMessage(key, data) {
